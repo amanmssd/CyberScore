@@ -1,6 +1,11 @@
 import { useState } from "react";
-import "./App.css";
+
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import QuestionCard from "./components/QuestionCard";
+
 import { questions } from "./data/questions";
+import "./App.css";
 
 type Screen = "home" | "assessment" | "results";
 
@@ -9,22 +14,37 @@ function App() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
 
+  const [categoryScores, setCategoryScores] = useState<
+    Record<string, number>
+  >({});
+
   function startAssessment() {
     setScore(0);
+    setCategoryScores({});
     setCurrentQuestion(0);
     setScreen("assessment");
   }
 
   function handleAnswer(points: number) {
+    const currentCategory = questions[currentQuestion].category;
     const newScore = score + points;
+
     setScore(newScore);
 
-    if (currentQuestion === questions.length - 1) {
+    setCategoryScores((previousScores) => ({
+      ...previousScores,
+      [currentCategory]:
+        (previousScores[currentCategory] ?? 0) + points,
+    }));
+
+    const isLastQuestion = currentQuestion === questions.length - 1;
+
+    if (isLastQuestion) {
       setScreen("results");
       return;
     }
 
-    setCurrentQuestion(currentQuestion + 1);
+    setCurrentQuestion((previousQuestion) => previousQuestion + 1);
   }
 
   function getRiskLevel() {
@@ -41,39 +61,15 @@ function App() {
 
   if (screen === "assessment") {
     const question = questions[currentQuestion];
-    const progress = ((currentQuestion + 1) / questions.length) * 100;
 
     return (
       <main className="assessment-page">
-        <section className="assessment-card">
-          <div className="assessment-top">
-            <span>{question.category}</span>
-            <span>
-              Question {currentQuestion + 1} of {questions.length}
-            </span>
-          </div>
-
-          <div className="progress-track">
-            <div
-              className="progress-fill"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-
-          <h1>{question.question}</h1>
-
-          <div className="answer-list">
-            {question.options.map((option) => (
-              <button
-                key={option.label}
-                className="answer-button"
-                onClick={() => handleAnswer(option.points)}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </section>
+        <QuestionCard
+          question={question}
+          questionNumber={currentQuestion + 1}
+          totalQuestions={questions.length}
+          onAnswer={handleAnswer}
+        />
       </main>
     );
   }
@@ -93,11 +89,27 @@ function App() {
             guarantee that your accounts or devices are secure.
           </p>
 
+          <div className="category-results">
+            <h2>Category breakdown</h2>
+
+            {Object.entries(categoryScores).map(
+              ([category, categoryScore]) => (
+                <div className="category-row" key={category}>
+                  <span>{category}</span>
+                  <strong>{categoryScore} points</strong>
+                </div>
+              ),
+            )}
+          </div>
+
           <button className="primary-btn" onClick={startAssessment}>
             Retake Assessment
           </button>
 
-          <button className="text-button" onClick={() => setScreen("home")}>
+          <button
+            className="text-button"
+            onClick={() => setScreen("home")}
+          >
             Return home
           </button>
         </section>
@@ -107,42 +119,8 @@ function App() {
 
   return (
     <div className="app">
-      <nav className="navbar">
-        <h2>CyberScore</h2>
-
-        <button className="nav-button" onClick={startAssessment}>
-          Start Assessment
-        </button>
-      </nav>
-
-      <section className="hero">
-        <div className="hero-text">
-          <h1>Know Your Cybersecurity Score.</h1>
-
-          <p>
-            Discover weaknesses in your online security and receive
-            personalized recommendations to better protect your digital life.
-          </p>
-
-          <button className="primary-btn" onClick={startAssessment}>
-            Take Assessment
-          </button>
-        </div>
-
-        <div className="score-card">
-          <h3>Example CyberScore</h3>
-
-          <div className="circle">72</div>
-
-          <p className="risk">Moderate Risk</p>
-
-          <ul>
-            <li>Enable multi-factor authentication</li>
-            <li>Update devices automatically</li>
-            <li>Use unique passwords</li>
-          </ul>
-        </div>
-      </section>
+      <Navbar onStartAssessment={startAssessment} />
+      <Hero onStartAssessment={startAssessment} />
     </div>
   );
 }

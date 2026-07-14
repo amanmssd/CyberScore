@@ -208,3 +208,29 @@ body{
   color: #b9c4d0;
   cursor: pointer;
 }
+
+.category-results {
+  margin: 32px 0;
+  text-align: left;
+}
+
+.category-results h2 {
+  margin-bottom: 16px;
+  font-size: 20px;
+}
+
+.category-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid #28435e;
+}
+
+.category-row span {
+  color: #b9c4d0;
+}
+
+.category-row strong {
+  color: #ffffff;
+}
