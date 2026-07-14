@@ -1,23 +1,28 @@
 import { useState } from "react";
 
-import Navbar from "./components/Navbar";
+import CyberJourney from "./components/CyberJourney";
 import Hero from "./components/Hero";
+import Navbar from "./components/Navbar";
 import QuestionCard from "./components/QuestionCard";
 
 import { questions } from "./data/questions";
+import {
+  buildDashboard,
+  type CategoryScore,
+} from "./utils/dashboard";
+
 import "./App.css";
 
 type Screen = "home" | "assessment" | "results";
-type CategoryScore = {
-  earned: number;
-  possible: number;
-};
 
 function App() {
   const [screen, setScreen] = useState<Screen>("home");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
-  const [categoryScores, setCategoryScores] = useState<Record<string, CategoryScore>>({});
+
+  const [categoryScores, setCategoryScores] = useState<
+    Record<string, CategoryScore>
+  >({});
 
   function startAssessment() {
     setScore(0);
@@ -27,46 +32,40 @@ function App() {
   }
 
   function handleAnswer(points: number) {
-  const currentCategory = questions[currentQuestion].category;
-  const newScore = score + points;
+    const currentQuestionData = questions[currentQuestion];
+    const currentCategory = currentQuestionData.category;
 
-  setScore(newScore);
+    const maximumPoints = Math.max(
+      ...currentQuestionData.options.map((option) => option.points),
+    );
 
-  setCategoryScores((previousScores) => {
-    const previousCategoryScore = previousScores[currentCategory] ?? {
-      earned: 0,
-      possible: 0,
-    };
+    setScore((previousScore) => previousScore + points);
 
-    return {
-      ...previousScores,
-      [currentCategory]: {
-        earned: previousCategoryScore.earned + points,
-        possible: previousCategoryScore.possible + 10,
-      },
-    };
-  });
+    setCategoryScores((previousScores) => {
+      const previousCategoryScore = previousScores[currentCategory] ?? {
+        earned: 0,
+        possible: 0,
+      };
 
-  const isLastQuestion = currentQuestion === questions.length - 1;
+      return {
+        ...previousScores,
+        [currentCategory]: {
+          earned: previousCategoryScore.earned + points,
+          possible: previousCategoryScore.possible + maximumPoints,
+        },
+      };
+    });
 
-  if (isLastQuestion) {
-    setScreen("results");
-    return;
-  }
+    const isLastQuestion = currentQuestion === questions.length - 1;
 
-  setCurrentQuestion((previousQuestion) => previousQuestion + 1);
-}
-
-  function getRiskLevel() {
-    if (score >= 85) {
-      return "Strong security habits";
+    if (isLastQuestion) {
+      setScreen("results");
+      return;
     }
 
-    if (score >= 65) {
-      return "Moderate security risk";
-    }
-
-    return "High security risk";
+    setCurrentQuestion(
+      (previousQuestion) => previousQuestion + 1,
+    );
   }
 
   if (screen === "assessment") {
@@ -85,50 +84,165 @@ function App() {
   }
 
   if (screen === "results") {
+    const dashboard = buildDashboard(categoryScores, score);
+
+    /*
+      This is temporary.
+
+      Later, the checklist will determine this number based on how
+      many security improvements the user marks as completed.
+    */
+    const completedImprovements = 1;
+
     return (
       <main className="results-page">
         <section className="results-card">
-          <p className="results-label">YOUR CYBERSCORE</p>
+          <CyberJourney
+            completedImprovements={completedImprovements}
+          />
 
-          <div className="results-score">{score}</div>
+          <div className="score-summary">
+            <p className="results-label">YOUR CYBERSCORE</p>
 
-          <h1>{getRiskLevel()}</h1>
+            <div className="results-score">
+              {dashboard.overallScore}
+              <span>/100</span>
+            </div>
 
-          <p>
-            This score reflects your reported security habits. It is not a
-            guarantee that your accounts or devices are secure.
-          </p>
+            <h1>{dashboard.riskLevel} security risk</h1>
 
-          <div className="category-results">
-            <h2>Category breakdown</h2>
-
-            {Object.entries(categoryScores).map(([category, categoryScore]) => {
-              const percentage = Math.round(
-                (categoryScore.earned / categoryScore.possible) * 100,
-              );
-
-              return (
-                <div className="category-row" key={category}>
-                  <span>{category}</span>
-
-                  <strong>
-                    {percentage}% ({categoryScore.earned}/{categoryScore.possible})
-                  </strong>
-                </div>
-              );
-            })}
+            <p className="results-description">
+              This score reflects your reported security habits. It is
+              not a guarantee that your accounts or devices are secure.
+            </p>
           </div>
 
-          <button className="primary-btn" onClick={startAssessment}>
-            Retake Assessment
-          </button>
+          <div className="dashboard-summary">
+            <div className="summary-item">
+              <span>Security opportunity</span>
 
-          <button
-            className="text-button"
-            onClick={() => setScreen("home")}
-          >
-            Return home
-          </button>
+              <strong>
+                +{dashboard.improvementPotential} points
+              </strong>
+
+              <p>
+                Complete your recommended actions to strengthen your
+                security posture.
+              </p>
+            </div>
+          </div>
+
+          <section className="priority-section">
+            <div className="section-title-row">
+              <div>
+                <p className="section-eyebrow">ACTION PLAN</p>
+                <h2>Top priorities</h2>
+              </div>
+
+              <span className="priority-count">
+                {dashboard.priorities.length} actions
+              </span>
+            </div>
+
+            <div className="priority-list">
+              {dashboard.priorities.map((priority, index) => (
+                <article
+                  className="priority-card"
+                  key={priority.category}
+                >
+                  <div className="priority-number">
+                    {index + 1}
+                  </div>
+
+                  <div className="priority-content">
+                    <div className="priority-heading">
+                      <div>
+                        <span className="priority-category">
+                          {priority.category}
+                        </span>
+
+                        <h3>{priority.title}</h3>
+                      </div>
+
+                      <span className="priority-score">
+                        {priority.percentage}%
+                      </span>
+                    </div>
+
+                    <p>{priority.description}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="category-results">
+            <div className="section-title-row">
+              <div>
+                <p className="section-eyebrow">SECURITY HEALTH</p>
+                <h2>Category breakdown</h2>
+              </div>
+            </div>
+
+            <div className="category-list">
+              {dashboard.categories.map((categoryResult) => (
+                <article
+                  className="category-row"
+                  key={categoryResult.category}
+                >
+                  <div className="category-heading">
+                    <div>
+                      <span className="category-name">
+                        {categoryResult.category}
+                      </span>
+
+                      <span
+                        className={`category-status status-${categoryResult.status
+                          .toLowerCase()
+                          .replace(" ", "-")}`}
+                      >
+                        {categoryResult.status}
+                      </span>
+                    </div>
+
+                    <strong>
+                      {categoryResult.percentage}%
+                    </strong>
+                  </div>
+
+                  <div className="category-progress">
+                    <div
+                      className="category-progress-fill"
+                      style={{
+                        width: `${categoryResult.percentage}%`,
+                      }}
+                    />
+                  </div>
+
+                  <div className="category-points">
+                    {categoryResult.earned} of{" "}
+                    {categoryResult.possible} points
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <div className="results-actions">
+            <button
+              className="primary-btn"
+              onClick={startAssessment}
+            >
+              Retake Assessment
+            </button>
+
+            <button
+              className="text-button"
+              onClick={() => setScreen("home")}
+            >
+              Return home
+            </button>
+          </div>
         </section>
       </main>
     );
