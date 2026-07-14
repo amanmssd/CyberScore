@@ -8,15 +8,16 @@ import { questions } from "./data/questions";
 import "./App.css";
 
 type Screen = "home" | "assessment" | "results";
+type CategoryScore = {
+  earned: number;
+  possible: number;
+};
 
 function App() {
   const [screen, setScreen] = useState<Screen>("home");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
-
-  const [categoryScores, setCategoryScores] = useState<
-    Record<string, number>
-  >({});
+  const [categoryScores, setCategoryScores] = useState<Record<string, CategoryScore>>({});
 
   function startAssessment() {
     setScore(0);
@@ -26,26 +27,35 @@ function App() {
   }
 
   function handleAnswer(points: number) {
-    const currentCategory = questions[currentQuestion].category;
-    const newScore = score + points;
+  const currentCategory = questions[currentQuestion].category;
+  const newScore = score + points;
 
-    setScore(newScore);
+  setScore(newScore);
 
-    setCategoryScores((previousScores) => ({
+  setCategoryScores((previousScores) => {
+    const previousCategoryScore = previousScores[currentCategory] ?? {
+      earned: 0,
+      possible: 0,
+    };
+
+    return {
       ...previousScores,
-      [currentCategory]:
-        (previousScores[currentCategory] ?? 0) + points,
-    }));
+      [currentCategory]: {
+        earned: previousCategoryScore.earned + points,
+        possible: previousCategoryScore.possible + 10,
+      },
+    };
+  });
 
-    const isLastQuestion = currentQuestion === questions.length - 1;
+  const isLastQuestion = currentQuestion === questions.length - 1;
 
-    if (isLastQuestion) {
-      setScreen("results");
-      return;
-    }
-
-    setCurrentQuestion((previousQuestion) => previousQuestion + 1);
+  if (isLastQuestion) {
+    setScreen("results");
+    return;
   }
+
+  setCurrentQuestion((previousQuestion) => previousQuestion + 1);
+}
 
   function getRiskLevel() {
     if (score >= 85) {
@@ -92,14 +102,21 @@ function App() {
           <div className="category-results">
             <h2>Category breakdown</h2>
 
-            {Object.entries(categoryScores).map(
-              ([category, categoryScore]) => (
+            {Object.entries(categoryScores).map(([category, categoryScore]) => {
+              const percentage = Math.round(
+                (categoryScore.earned / categoryScore.possible) * 100,
+              );
+
+              return (
                 <div className="category-row" key={category}>
                   <span>{category}</span>
-                  <strong>{categoryScore} points</strong>
+
+                  <strong>
+                    {percentage}% ({categoryScore.earned}/{categoryScore.possible})
+                  </strong>
                 </div>
-              ),
-            )}
+              );
+            })}
           </div>
 
           <button className="primary-btn" onClick={startAssessment}>
