@@ -27,6 +27,7 @@ export type DashboardSummary = {
   improvementPotential: number;
   categories: CategoryResult[];
   priorities: Priority[];
+  recommendations: Priority[];
 };
 
 function calculatePercentage(earned: number, possible: number) {
@@ -94,26 +95,28 @@ export function buildDashboard(
     },
   );
 
-  const priorities = [...categories]
-    .sort(
-      (firstCategory, secondCategory) =>
-        firstCategory.percentage - secondCategory.percentage,
-    )
-    .slice(0, 3)
-    .map((categoryResult) => {
-      const recommendation = recommendations[categoryResult.category];
+  const allRecommendations = [...categories]
+  .filter((categoryResult) => categoryResult.percentage < 100)
+  .sort(
+    (firstCategory, secondCategory) =>
+      firstCategory.percentage - secondCategory.percentage,
+  )
+  .map((categoryResult) => {
+    const recommendation = recommendations[categoryResult.category];
 
-      return {
-        category: categoryResult.category,
-        percentage: categoryResult.percentage,
-        title:
-          recommendation?.title ??
-          `Improve ${categoryResult.category}`,
-        description:
-          recommendation?.description ??
-          "Review this area and strengthen your current security habits.",
-      };
-    });
+    return {
+      category: categoryResult.category,
+      percentage: categoryResult.percentage,
+      title:
+        recommendation?.title ??
+        `Improve ${categoryResult.category}`,
+      description:
+        recommendation?.description ??
+        "Review this area and strengthen your current security habits.",
+    };
+  });
+
+const priorities = allRecommendations.slice(0, 3);
 
   return {
     overallScore,
@@ -122,5 +125,6 @@ export function buildDashboard(
     improvementPotential: Math.max(0, 100 - overallScore),
     categories,
     priorities,
+    recommendations: allRecommendations,
   };
 }

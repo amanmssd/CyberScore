@@ -11,24 +11,9 @@ export type SecurityLevel = {
 };
 
 export const securityLevels: SecurityLevel[] = [
-  {
-    name: "Beginner",
-    requiredCompleted: 0,
-  },
-  {
-    name: "Intermediate",
-    requiredCompleted: 3,
-  },
-  {
-    name: "Advanced",
-    requiredCompleted: 7,
-  },
-  {
-    name: "Expert",
-    requiredCompleted: 12,
-  },
-  {
-    name: "Cyber Guardian",
-    requiredCompleted: 18,
-  },
+  { name: "Beginner", requiredCompleted: 0 },
+  { name: "Intermediate", requiredCompleted: 2 },
+  { name: "Advanced", requiredCompleted: 4 },
+  { name: "Expert", requiredCompleted: 6 },
+  { name: "Cyber Guardian", requiredCompleted: 7 },
 ];
