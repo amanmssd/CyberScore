@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import CategoryChart from "./CategoryChart";
 import CyberJourney from "./CyberJourney";
 
 import {
@@ -23,6 +24,7 @@ function ResultsDashboard({
   const dashboard = buildDashboard(categoryScores, score);
 
   const [completedPriorities, setCompletedPriorities] = useState<string[]>([]);
+  const [openCategory, setOpenCategory] = useState<string | null>(null);
 
   const completedImprovements = completedPriorities.length;
 
@@ -38,6 +40,12 @@ function ResultsDashboard({
 
       return [...previousPriorities, category];
     });
+  }
+
+  function toggleCategory(category: string) {
+    setOpenCategory((currentCategory) =>
+      currentCategory === category ? null : category,
+    );
   }
 
   return (
@@ -174,6 +182,8 @@ function ResultsDashboard({
           </div>
 
           <aside className="dashboard-side-column">
+            <CategoryChart categories={dashboard.categories} />
+
             <section className="category-results">
               <div className="section-title-row">
                 <div>
@@ -182,46 +192,104 @@ function ResultsDashboard({
                 </div>
               </div>
 
-              <div className="category-list">
+              <div className="category-accordion">
                 {dashboard.categories.map((categoryResult) => {
+                  const isOpen =
+                    openCategory === categoryResult.category;
+
                   const statusClass = categoryResult.status
                     .toLowerCase()
                     .replaceAll(" ", "-");
 
+                  const matchingRecommendation =
+                    dashboard.recommendations.find(
+                      (recommendation) =>
+                        recommendation.category ===
+                        categoryResult.category,
+                    );
+
                   return (
                     <article
-                      className="category-row"
+                      className={`category-accordion-item ${
+                        isOpen
+                          ? "category-accordion-item-open"
+                          : ""
+                      }`}
                       key={categoryResult.category}
                     >
-                      <div className="category-heading">
-                        <div>
-                          <span className="category-name">
-                            {categoryResult.category}
-                          </span>
+                      <button
+                        className="category-accordion-trigger"
+                        type="button"
+                        onClick={() =>
+                          toggleCategory(categoryResult.category)
+                        }
+                        aria-expanded={isOpen}
+                      >
+                        <div className="category-accordion-heading">
+                          <div>
+                            <span className="category-name">
+                              {categoryResult.category}
+                            </span>
 
-                          <span
-                            className={`category-status status-${statusClass}`}
-                          >
-                            {categoryResult.status}
-                          </span>
+                            <span
+                              className={`category-status status-${statusClass}`}
+                            >
+                              {categoryResult.status}
+                            </span>
+                          </div>
+
+                          <div className="category-accordion-score">
+                            <strong>
+                              {categoryResult.percentage}%
+                            </strong>
+
+                            <span aria-hidden="true">
+                              {isOpen ? "−" : "+"}
+                            </span>
+                          </div>
                         </div>
 
-                        <strong>{categoryResult.percentage}%</strong>
-                      </div>
+                        <div className="category-progress">
+                          <div
+                            className="category-progress-fill"
+                            style={{
+                              width: `${categoryResult.percentage}%`,
+                            }}
+                          />
+                        </div>
+                      </button>
 
-                      <div className="category-progress">
-                        <div
-                          className="category-progress-fill"
-                          style={{
-                            width: `${categoryResult.percentage}%`,
-                          }}
-                        />
-                      </div>
+                      {isOpen && (
+                        <div className="category-accordion-content">
+                          <div className="category-detail-row">
+                            <span>Points earned</span>
 
-                      <div className="category-points">
-                        {categoryResult.earned} of{" "}
-                        {categoryResult.possible} points
-                      </div>
+                            <strong>
+                              {categoryResult.earned} of{" "}
+                              {categoryResult.possible}
+                            </strong>
+                          </div>
+
+                          <div className="category-detail-row">
+                            <span>Status</span>
+                            <strong>{categoryResult.status}</strong>
+                          </div>
+
+                          {matchingRecommendation && (
+                            <div className="category-recommendation">
+                              <span>Recommended action</span>
+
+                              <strong>
+                                {matchingRecommendation.title}
+                              </strong>
+
+                              <p>
+                                {matchingRecommendation.description}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </article>
                   );
                 })}
@@ -231,11 +299,17 @@ function ResultsDashboard({
         </div>
 
         <div className="results-actions">
-          <button className="primary-btn" onClick={onRestart}>
+          <button
+            className="primary-btn"
+            onClick={onRestart}
+          >
             Retake Assessment
           </button>
 
-          <button className="text-button" onClick={onHome}>
+          <button
+            className="text-button"
+            onClick={onHome}
+          >
             Return home
           </button>
         </div>
