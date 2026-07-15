@@ -1,32 +1,288 @@
-# React + TypeScript + Vite
+<h1 align="center">🛡️ CyberScore</h1>
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+<p align="center">
+An interactive cybersecurity assessment platform that helps users evaluate their digital security habits, receive a personalized CyberScore, and follow a guided improvement roadmap.
+</p>
 
-Currently, two official plugins are available:
+<p align="center">
+Built with React • TypeScript • Vite
+</p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+# Overview
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+CyberScore is an educational web application designed to make cybersecurity approachable for everyday users.
 
-## Expanding the Oxlint configuration
+Instead of overwhelming users with technical jargon, CyberScore asks a series of simple questions about password management, authentication, phishing awareness, backups, device security, privacy, and network security.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+After completing the assessment, users receive:
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+- A personalized CyberScore (0–100)
+- Overall security risk level
+- Category-by-category security analysis
+- Actionable improvement recommendations
+- A security progression system ("Cyber Journey")
+- Interactive checklist to track completed improvements
+- Visual security dashboard with charts and progress indicators
+
+The goal is to turn cybersecurity education into something interactive, measurable, and motivating.
+
+---
+
+# Features
+
+## Assessment Engine
+
+- Multi-category cybersecurity questionnaire
+- Weighted scoring system
+- Category-specific score tracking
+- Overall CyberScore calculation
+
+## Interactive Dashboard
+
+- Personalized CyberScore
+- Risk classification
+- Security opportunity summary
+- Category health overview
+- Interactive category chart
+- Expandable category breakdown
+
+## Personalized Recommendations
+
+Recommendations automatically prioritize the user's weakest security areas.
+
+Examples include:
+
+- Enable Multi-Factor Authentication
+- Improve Password Security
+- Create Reliable Backups
+- Strengthen Device Protection
+- Improve Phishing Awareness
+- Secure Home Network
+- Review Privacy Settings
+
+---
+
+## Cyber Journey
+
+Users progress through security levels as they complete improvements.
+
+Current progression:
+
+- 🟦 Beginner
+- 🟩 Intermediate
+- 🟨 Advanced
+- 🟪 Expert *(planned)*
+
+The dashboard displays:
+
+- Current security level
+- Improvements completed
+- Progress bar
+- Remaining actions needed for the next level
+
+---
+
+## Improvement Checklist
+
+Every recommendation can be tracked through an interactive checklist.
+
+Features include:
+
+- Completion tracking
+- Progress counter
+- Persistent improvement roadmap *(planned)*
+- Personalized learning path
+
+---
+
+## Category Analysis
+
+CyberScore evaluates:
+
+- Password Security
+- Authentication
+- Device Security
+- Backups
+- Phishing Awareness
+- Network Security
+- Privacy
+
+Each category displays:
+
+- Percentage score
+- Status badge
+- Progress bar
+- Recommended action
+
+---
+
+# Built With
+
+- React
+- TypeScript
+- Vite
+- CSS
+- Lucide React Icons
+- Recharts
+
+---
+
+# Project Structure
+
+```
+src/
+│
+├── assets/
+├── components/
+│   ├── Hero
+│   ├── QuestionCard
+│   ├── ResultsDashboard
+│   ├── CyberJourney
+│   └── CategoryChart
+│
+├── data/
+│   ├── questions
+│   └── recommendations
+│
+├── utils/
+│   ├── dashboard
+│   ├── journey
+│   └── levels
+│
+├── App.tsx
+└── main.tsx
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+---
+
+# Roadmap
+
+## Phase 1 — Core Application 
+
+- [x] Landing page
+- [x] Assessment flow
+- [x] Question navigation
+- [x] Weighted scoring
+- [x] Results dashboard
+- [x] Category scoring
+- [x] Interactive recommendations
+- [x] Cyber Journey progression
+- [x] Improvement checklist
+- [x] Category visualization
+- [x] Responsive dashboard
+
+---
+
+## Phase 1.5 — UI Polish 
+
+- [ ] Dashboard animations
+- [ ] Improved mobile experience
+- [ ] Better spacing and typography
+- [ ] Progress animations
+- [ ] Save checklist state
+
+---
+
+## Phase 2 — User Accounts
+
+- [ ] Authentication
+- [ ] User profiles
+- [ ] Save assessment history
+- [ ] Persistent Cyber Journey
+- [ ] Dashboard history
+
+---
+
+## Phase 3 — AI Features
+
+- [ ] AI security assistant
+- [ ] Personalized explanations
+- [ ] Security chatbot
+- [ ] AI-generated recommendations
+- [ ] Threat education
+
+---
+
+## Phase 4 — Enterprise
+
+- [ ] Organization dashboards
+- [ ] Team security scores
+- [ ] Administrator portal
+- [ ] Reporting
+- [ ] Analytics
+
+---
+
+# Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/amanmssd/CyberScore.git
+```
+
+Navigate into the project
+
+```bash
+cd CyberScore
+```
+
+Install dependencies
+
+```bash
+npm install
+```
+
+Run the development server
+
+```bash
+npm run dev
+```
+
+Build for production
+
+```bash
+npm run build
+```
+
+---
+
+# Future Vision
+
+CyberScore is intended to grow beyond a simple assessment into a complete cybersecurity education platform.
+
+Planned capabilities include:
+
+- Account creation
+- Progress tracking
+- Historical score comparisons
+- AI-powered coaching
+- Personalized learning paths
+- Enterprise security dashboards
+- Gamification and achievements
+
+---
+
+# Author
+
+**Aman Masood**
+
+Cybersecurity Student at Penn State University
+
+Experienced in:
+- Cybersecurity
+- Software Engineering
+- Application Development
+- Artificial Intelligence
+- Full-Stack Development
+
+GitHub:
+https://github.com/amanmssd
+
+---
+
+# License
+
+This project is licensed under the MIT License.
