@@ -1420,3 +1420,41 @@ button {
     gap: 5px;
   }
 }
+
+.security-health-card {
+  overflow: hidden;
+  border: 1px solid #294663;
+  border-radius: 18px;
+  background: #132844;
+}
+
+.security-health-card .category-chart-card {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.security-health-divider {
+  height: 1px;
+  margin: 0 22px;
+  background: rgba(45, 74, 104, 0.75);
+}
+
+.security-health-breakdown {
+  padding: 22px;
+}
+
+.security-health-breakdown .section-title-row {
+  margin-bottom: 18px;
+}
+
+@media (max-width: 600px) {
+  .security-health-divider {
+    margin: 0 18px;
+  }
+
+  .security-health-breakdown {
+    padding: 18px;
+  }
+}

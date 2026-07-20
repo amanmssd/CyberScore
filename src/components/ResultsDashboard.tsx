@@ -182,117 +182,121 @@ function ResultsDashboard({
           </div>
 
           <aside className="dashboard-side-column">
-            <CategoryChart categories={dashboard.categories} />
+            <section className="security-health-card">
+              <CategoryChart categories={dashboard.categories} />
 
-            <section className="category-results">
-              <div className="section-title-row">
-                <div>
-                  <p className="section-eyebrow">SECURITY HEALTH</p>
-                  <h2>Category breakdown</h2>
+              <div className="security-health-divider" />
+
+              <div className="security-health-breakdown">
+                <div className="section-title-row">
+                  <div>
+                    <p className="section-eyebrow">CATEGORY DETAILS</p>
+                    <h2>Category breakdown</h2>
+                  </div>
                 </div>
-              </div>
 
-              <div className="category-accordion">
-                {dashboard.categories.map((categoryResult) => {
-                  const isOpen =
-                    openCategory === categoryResult.category;
+                <div className="category-accordion">
+                  {dashboard.categories.map((categoryResult) => {
+                    const isOpen =
+                      openCategory === categoryResult.category;
 
-                  const statusClass = categoryResult.status
-                    .toLowerCase()
-                    .replaceAll(" ", "-");
+                    const statusClass = categoryResult.status
+                      .toLowerCase()
+                      .replaceAll(" ", "-");
 
-                  const matchingRecommendation =
-                    dashboard.recommendations.find(
-                      (recommendation) =>
-                        recommendation.category ===
-                        categoryResult.category,
-                    );
+                    const matchingRecommendation =
+                      dashboard.recommendations.find(
+                        (recommendation) =>
+                          recommendation.category ===
+                          categoryResult.category,
+                      );
 
-                  return (
-                    <article
-                      className={`category-accordion-item ${
-                        isOpen
-                          ? "category-accordion-item-open"
-                          : ""
-                      }`}
-                      key={categoryResult.category}
-                    >
-                      <button
-                        className="category-accordion-trigger"
-                        type="button"
-                        onClick={() =>
-                          toggleCategory(categoryResult.category)
-                        }
-                        aria-expanded={isOpen}
+                    return (
+                      <article
+                        className={`category-accordion-item ${
+                          isOpen
+                            ? "category-accordion-item-open"
+                            : ""
+                        }`}
+                        key={categoryResult.category}
                       >
-                        <div className="category-accordion-heading">
-                          <div>
-                            <span className="category-name">
-                              {categoryResult.category}
-                            </span>
+                        <button
+                          className="category-accordion-trigger"
+                          type="button"
+                          onClick={() =>
+                            toggleCategory(categoryResult.category)
+                          }
+                          aria-expanded={isOpen}
+                        >
+                          <div className="category-accordion-heading">
+                            <div>
+                              <span className="category-name">
+                                {categoryResult.category}
+                              </span>
 
-                            <span
-                              className={`category-status status-${statusClass}`}
-                            >
-                              {categoryResult.status}
-                            </span>
-                          </div>
+                              <span
+                                className={`category-status status-${statusClass}`}
+                              >
+                                {categoryResult.status}
+                              </span>
+                            </div>
 
-                          <div className="category-accordion-score">
-                            <strong>
-                              {categoryResult.percentage}%
-                            </strong>
-
-                            <span aria-hidden="true">
-                              {isOpen ? "−" : "+"}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="category-progress">
-                          <div
-                            className="category-progress-fill"
-                            style={{
-                              width: `${categoryResult.percentage}%`,
-                            }}
-                          />
-                        </div>
-                      </button>
-
-                      {isOpen && (
-                        <div className="category-accordion-content">
-                          <div className="category-detail-row">
-                            <span>Points earned</span>
-
-                            <strong>
-                              {categoryResult.earned} of{" "}
-                              {categoryResult.possible}
-                            </strong>
-                          </div>
-
-                          <div className="category-detail-row">
-                            <span>Status</span>
-                            <strong>{categoryResult.status}</strong>
-                          </div>
-
-                          {matchingRecommendation && (
-                            <div className="category-recommendation">
-                              <span>Recommended action</span>
-
+                            <div className="category-accordion-score">
                               <strong>
-                                {matchingRecommendation.title}
+                                {categoryResult.percentage}%
                               </strong>
 
-                              <p>
-                                {matchingRecommendation.description}
-                              </p>
+                              <span aria-hidden="true">
+                                {isOpen ? "−" : "+"}
+                              </span>
                             </div>
-                          )}
-                        </div>
-                      )}
-                    </article>
-                  );
-                })}
+                          </div>
+
+                          <div className="category-progress">
+                            <div
+                              className="category-progress-fill"
+                              style={{
+                                width: `${categoryResult.percentage}%`,
+                              }}
+                            />
+                          </div>
+                        </button>
+
+                        {isOpen && (
+                          <div className="category-accordion-content">
+                            <div className="category-detail-row">
+                              <span>Points earned</span>
+
+                              <strong>
+                                {categoryResult.earned} of{" "}
+                                {categoryResult.possible}
+                              </strong>
+                            </div>
+
+                            <div className="category-detail-row">
+                              <span>Status</span>
+                              <strong>{categoryResult.status}</strong>
+                            </div>
+
+                            {matchingRecommendation && (
+                              <div className="category-recommendation">
+                                <span>Recommended action</span>
+
+                                <strong>
+                                  {matchingRecommendation.title}
+                                </strong>
+
+                                <p>
+                                  {matchingRecommendation.description}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </article>
+                    );
+                  })}
+                </div>
               </div>
             </section>
           </aside>
