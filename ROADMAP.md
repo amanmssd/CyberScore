@@ -39,6 +39,8 @@ CyberScore is a cybersecurity self-assessment platform designed to help individu
 - [x] Merge Security Health widgets
 - [x] Remove separate Security Opportunity card
 - [x] Display improvement potential inside score card
+- [x] Live dashboard updates
+- [x] Dynamic category recalculation
 
 ## Animations
 
