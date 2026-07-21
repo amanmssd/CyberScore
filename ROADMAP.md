@@ -44,8 +44,8 @@ CyberScore is a cybersecurity self-assessment platform designed to help individu
 
 - [x] Animated CyberScore counter
 - [x] Animated progress bars
-- [ ] Smooth accordion transitions
-- [ ] Checklist completion animations
+- [x] Smooth accordion transitions
+- [x] Checklist completion animations
 
 ## Persistence
 

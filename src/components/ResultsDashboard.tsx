@@ -34,6 +34,19 @@ function ResultsDashboard({
 
   const completedImprovements = completedPriorities.length;
 
+  const improvedCategories = dashboard.categories.map((categoryResult) => {
+    if (!completedPriorities.includes(categoryResult.category)) {
+      return categoryResult;
+    }
+
+    return {
+      ...categoryResult,
+      earned: categoryResult.possible,
+      percentage: 100,
+      status: "Excellent" as const,
+    };
+  });
+
   useEffect(() => {
     const reducedMotionQuery = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -208,6 +221,11 @@ function ResultsDashboard({
                         }
                       />
 
+                      <span
+                        className="checklist-checkmark"
+                        aria-hidden="true"
+                      />
+
                       <div>
                         <strong>{recommendation.title}</strong>
                         <span>{recommendation.category}</span>
@@ -225,7 +243,7 @@ function ResultsDashboard({
 
           <aside className="dashboard-side-column">
             <section className="security-health-card">
-              <CategoryChart categories={dashboard.categories} />
+              <CategoryChart categories={improvedCategories} />
 
               <div className="security-health-divider" />
 
@@ -238,7 +256,7 @@ function ResultsDashboard({
                 </div>
 
                 <div className="category-accordion">
-                  {dashboard.categories.map((categoryResult) => {
+                  {improvedCategories.map((categoryResult) => {
                     const isOpen =
                       openCategory === categoryResult.category;
 
