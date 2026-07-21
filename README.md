@@ -200,7 +200,7 @@ src/
 
 - [x] Supabase client setup
 - [x] Session initialization and auth state listener
-- [x] Google and Microsoft/Azure OAuth frontend integration
+- [x] Google OAuth frontend integration
 - [x] Optional sign-in from assessment results
 - [x] Sign-out flow
 - [x] Visible authentication loading and configuration errors
@@ -210,6 +210,7 @@ src/
 ## Phase 2B — OAuth Provider Configuration
 
 - [ ] Configure Google OAuth provider
+- [ ] Implement Microsoft/Azure OAuth frontend integration
 - [ ] Configure Microsoft/Azure OAuth provider
 - [ ] Add local and production redirect URLs
 - [ ] Test sign-in, sign-out, and restored sessions

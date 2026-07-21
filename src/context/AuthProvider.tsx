@@ -106,24 +106,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  async function signInWithMicrosoft() {
-    if (!supabase) {
-      throw new Error("CyberScore authentication is not configured.");
-    }
-
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "azure",
-      options: {
-        redirectTo: window.location.origin,
-        scopes: "email",
-      },
-    });
-
-    if (error) {
-      throw error;
-    }
-  }
-
   async function signOut() {
     if (!supabase) {
       throw new Error("CyberScore authentication is not configured.");
@@ -142,7 +124,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       user,
       loading,
       signInWithGoogle,
-      signInWithMicrosoft,
       signOut,
     }),
     [loading, session, user],

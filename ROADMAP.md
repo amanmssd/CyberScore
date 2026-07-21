@@ -43,7 +43,6 @@ Status: Completed
 - Session initialization
 - Auth state listener
 - Google OAuth frontend integration
-- Microsoft/Azure OAuth frontend integration
 - Sign-out flow
 - Optional sign-in after assessment completion
 - Save progress authentication interface
@@ -64,6 +63,7 @@ Status: Next
 
 - Configure Google provider in Supabase
 - Configure Google OAuth consent screen and credentials
+- Implement Microsoft/Azure OAuth frontend integration
 - Configure Microsoft/Azure provider in Supabase
 - Configure Microsoft Entra app registration
 - Add localhost redirect URLs

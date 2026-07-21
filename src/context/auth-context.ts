@@ -6,7 +6,6 @@ export type AuthContextValue = {
   user: User | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
-  signInWithMicrosoft: () => Promise<void>;
   signOut: () => Promise<void>;
 };
 

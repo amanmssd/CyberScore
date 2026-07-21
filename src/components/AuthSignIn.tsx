@@ -2,15 +2,7 @@ import { useState } from "react";
 
 import { useAuth } from "../context/useAuth";
 
-type AuthProviderName = "google" | "microsoft";
-
-const providerLabels: Record<AuthProviderName, string> = {
-  google: "Google",
-  microsoft: "Microsoft",
-};
-
-function getErrorMessage(provider: AuthProviderName, error: unknown) {
-  const providerLabel = providerLabels[provider];
+function getErrorMessage(error: unknown) {
   let message = "An unexpected OAuth error occurred.";
   let code: string | null = null;
   let status: number | null = null;
@@ -36,42 +28,37 @@ function getErrorMessage(provider: AuthProviderName, error: unknown) {
     status ? `status: ${status}` : null,
   ].filter((detail): detail is string => detail !== null);
 
-  return `${providerLabel} sign-in could not start: ${message}${
+  return `Google sign-in could not start: ${message}${
     details.length > 0 ? ` (${details.join(", ")})` : ""
   }`;
 }
 
 function AuthSignIn() {
-  const { loading, signInWithGoogle, signInWithMicrosoft } = useAuth();
-  const [pendingProvider, setPendingProvider] =
-    useState<AuthProviderName | null>(null);
+  const { loading, signInWithGoogle } = useAuth();
+  const [isSigningIn, setIsSigningIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  async function handleSignIn(provider: AuthProviderName) {
+  async function handleSignIn() {
     if (import.meta.env.DEV) {
       console.info("[CyberScore OAuth] Sign-in click", {
         clickHandlerRan: true,
-        provider,
+        provider: "google",
         redirectOrigin: window.location.origin,
       });
     }
 
-    setPendingProvider(provider);
+    setIsSigningIn(true);
     setErrorMessage(null);
 
     try {
-      if (provider === "google") {
-        await signInWithGoogle();
-      } else {
-        await signInWithMicrosoft();
-      }
+      await signInWithGoogle();
     } catch (error: unknown) {
-      setErrorMessage(getErrorMessage(provider, error));
-      setPendingProvider(null);
+      setErrorMessage(getErrorMessage(error));
+      setIsSigningIn(false);
     }
   }
 
-  const isDisabled = loading || pendingProvider !== null;
+  const isDisabled = loading || isSigningIn;
 
   return (
     <section className="auth-sign-in" aria-labelledby="auth-sign-in-title">
@@ -83,22 +70,14 @@ function AuthSignIn() {
       <div className="auth-sign-in-actions">
         <button
           type="button"
-          onClick={() => void handleSignIn("google")}
+          onClick={() => void handleSignIn()}
           disabled={isDisabled}
         >
-          {pendingProvider === "google"
-            ? "Opening Google…"
-            : "Continue with Google"}
+          {isSigningIn ? "Opening Google…" : "Continue with Google"}
         </button>
 
-        <button
-          type="button"
-          onClick={() => void handleSignIn("microsoft")}
-          disabled={isDisabled}
-        >
-          {pendingProvider === "microsoft"
-            ? "Opening Microsoft…"
-            : "Continue with Microsoft"}
+        <button type="button" disabled aria-disabled="true">
+          Continue with Microsoft — Coming soon
         </button>
       </div>
 
