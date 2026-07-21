@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import AccountControl from "./AccountControl";
 import CategoryChart from "./CategoryChart";
 import CyberJourney from "./CyberJourney";
 
@@ -363,6 +364,8 @@ function ResultsDashboard({
         </div>
 
         <div className="results-actions">
+          <AccountControl />
+
           <button
             className="primary-btn"
             onClick={onRestart}

@@ -179,7 +179,7 @@ src/
 
 # Roadmap
 
-## Phase 1 — Core Application 
+## Phase 1 — Core Assessment Experience
 
 - [x] Landing page
 - [x] Assessment flow
@@ -192,26 +192,30 @@ src/
 - [x] Improvement checklist
 - [x] Category visualization
 - [x] Responsive dashboard
+- [x] Dashboard animations and live category recalculation
 
 ---
 
-## Phase 1.5 — UI Polish 
+## Phase 2A — Authentication Foundation
 
-- [ ] Dashboard animations
-- [ ] Improved mobile experience
-- [ ] Better spacing and typography
-- [ ] Progress animations
-- [ ] Save checklist state
+- [x] Supabase client setup
+- [x] Session initialization and auth state listener
+- [x] Google and Microsoft/Azure OAuth frontend integration
+- [x] Optional sign-in from assessment results
+- [x] Sign-out flow
+- [x] Visible authentication loading and configuration errors
 
 ---
 
-## Phase 2 — User Accounts
+## Phase 2B — OAuth Provider Configuration
 
-- [ ] Authentication
-- [ ] User profiles
-- [ ] Save assessment history
-- [ ] Persistent Cyber Journey
-- [ ] Dashboard history
+- [ ] Configure Google OAuth provider
+- [ ] Configure Microsoft/Azure OAuth provider
+- [ ] Add local and production redirect URLs
+- [ ] Test sign-in, sign-out, and restored sessions
+- [ ] Test canceled and failed OAuth attempts
+
+Assessment persistence, database tables, and Row Level Security are planned for later Phase 2 work.
 
 ---
 
