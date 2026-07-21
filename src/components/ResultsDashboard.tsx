@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import CategoryChart from "./CategoryChart";
 import CyberJourney from "./CyberJourney";
@@ -23,10 +23,59 @@ function ResultsDashboard({
 }: ResultsDashboardProps) {
   const dashboard = buildDashboard(categoryScores, score);
 
+  const [displayedScore, setDisplayedScore] = useState(() =>
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? dashboard.overallScore
+      : 0,
+  );
+
   const [completedPriorities, setCompletedPriorities] = useState<string[]>([]);
   const [openCategory, setOpenCategory] = useState<string | null>(null);
 
   const completedImprovements = completedPriorities.length;
+
+  useEffect(() => {
+    const reducedMotionQuery = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
+    let animationFrame = 0;
+
+    function updateScore() {
+      cancelAnimationFrame(animationFrame);
+
+      if (reducedMotionQuery.matches) {
+        setDisplayedScore(dashboard.overallScore);
+        return;
+      }
+
+      const animationDuration = 900;
+      const animationStart = performance.now();
+
+      function animateScore(currentTime: number) {
+        const elapsed = currentTime - animationStart;
+        const progress = Math.min(elapsed / animationDuration, 1);
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+
+        setDisplayedScore(
+          Math.round(dashboard.overallScore * easedProgress),
+        );
+
+        if (progress < 1) {
+          animationFrame = requestAnimationFrame(animateScore);
+        }
+      }
+
+      animationFrame = requestAnimationFrame(animateScore);
+    }
+
+    updateScore();
+    reducedMotionQuery.addEventListener("change", updateScore);
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      reducedMotionQuery.removeEventListener("change", updateScore);
+    };
+  }, [dashboard.overallScore]);
 
   function togglePriority(category: string) {
     setCompletedPriorities((previousPriorities) => {
@@ -59,34 +108,27 @@ function ResultsDashboard({
           <div className="score-summary">
             <p className="results-label">YOUR CYBERSCORE</p>
 
-            <div className="results-score">
-              {dashboard.overallScore}
+            <div
+              className="results-score"
+              aria-label={`CyberScore ${dashboard.overallScore} out of 100`}
+            >
+              {displayedScore}
               <span>/100</span>
             </div>
 
             <h1>{dashboard.riskLevel} security risk</h1>
 
+            <div className="score-opportunity">
+              <strong>+{dashboard.improvementPotential} points available</strong>
+            </div>
+
             <p className="results-description">
-              This score reflects your reported security habits. It is not a
-              guarantee that your accounts or devices are secure.
+              Complete your recommended actions to improve your CyberScore and
+              strengthen your overall security posture.
             </p>
           </div>
         </div>
 
-        <div className="dashboard-summary">
-          <div className="summary-item">
-            <span>Security opportunity</span>
-
-            <strong>
-              +{dashboard.improvementPotential} points
-            </strong>
-
-            <p>
-              Complete your recommended actions to strengthen your security
-              posture.
-            </p>
-          </div>
-        </div>
 
         <div className="dashboard-content-grid">
           <div className="dashboard-main-column">

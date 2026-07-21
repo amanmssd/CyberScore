@@ -1458,3 +1458,26 @@ button {
     padding: 18px;
   }
 }
+
+.score-opportunity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: fit-content;
+  max-width: max-content;
+
+  margin: 16px auto;
+  padding: 8px 16px;
+
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  border-radius: 999px;
+  background: rgba(52, 211, 153, 0.12);
+}
+
+.score-opportunity strong {
+  color: #5eead4;
+  font-size: 0.95rem;
+  font-weight: 600;
+  white-space: nowrap;
+}

@@ -18,7 +18,7 @@
 ## 🎨 Phase 1.5 – UI Polish
 
 ### Dashboard
-- [ ] Merge Category Overview + Category Breakdown
+- [x] Merge Category Overview + Category Breakdown
 - [ ] Remove Security Opportunity card
 - [ ] Improve spacing
 - [ ] Better mobile layout
