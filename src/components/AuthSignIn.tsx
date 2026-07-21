@@ -4,12 +4,41 @@ import { useAuth } from "../context/useAuth";
 
 type AuthProviderName = "google" | "microsoft";
 
-function getErrorMessage(error: unknown) {
+const providerLabels: Record<AuthProviderName, string> = {
+  google: "Google",
+  microsoft: "Microsoft",
+};
+
+function getErrorMessage(provider: AuthProviderName, error: unknown) {
+  const providerLabel = providerLabels[provider];
+  let message = "An unexpected OAuth error occurred.";
+  let code: string | null = null;
+  let status: number | null = null;
+
   if (error instanceof Error && error.message.trim()) {
-    return error.message;
+    message = error.message.trim();
   }
 
-  return "We couldn't start sign-in. Please try again.";
+  if (typeof error === "object" && error !== null) {
+    const errorDetails = error as Record<string, unknown>;
+
+    if (typeof errorDetails.code === "string") {
+      code = errorDetails.code;
+    }
+
+    if (typeof errorDetails.status === "number") {
+      status = errorDetails.status;
+    }
+  }
+
+  const details = [
+    code ? `code: ${code}` : null,
+    status ? `status: ${status}` : null,
+  ].filter((detail): detail is string => detail !== null);
+
+  return `${providerLabel} sign-in could not start: ${message}${
+    details.length > 0 ? ` (${details.join(", ")})` : ""
+  }`;
 }
 
 function AuthSignIn() {
@@ -19,6 +48,14 @@ function AuthSignIn() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   async function handleSignIn(provider: AuthProviderName) {
+    if (import.meta.env.DEV) {
+      console.info("[CyberScore OAuth] Sign-in click", {
+        clickHandlerRan: true,
+        provider,
+        redirectOrigin: window.location.origin,
+      });
+    }
+
     setPendingProvider(provider);
     setErrorMessage(null);
 
@@ -29,7 +66,7 @@ function AuthSignIn() {
         await signInWithMicrosoft();
       }
     } catch (error: unknown) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getErrorMessage(provider, error));
       setPendingProvider(null);
     }
   }
